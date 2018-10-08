@@ -11,7 +11,7 @@ import matplotlib.gridspec as gridspec
 import pandas as pd
 import numpy as np
 np.random.seed(seed=1)
-from string import strip
+#from string import strip
 
           
 def clean_axis(ax):
@@ -50,7 +50,8 @@ def plot_experiment(in_df,
          height_ratios=[1, 4],
          hspace=0.05,
          #wheter to return to clustering of the rows as a new columns
-         get_clusters=True):
+         get_clusters=True,
+         owerwrite_order=False):
 
     if figsize == None:
         fig = plt.figure()
@@ -160,12 +161,18 @@ def plot_experiment(in_df,
         new_ax.set_xticks(xticks)
         xtickslabels = [add_second_axis['values'][n+0.5] for n in xticks]
         new_ax.set_xticklabels(xtickslabels)
-        
-    if order_row_and_columns == True:
-        heatmap=ax4.pcolor(in_df.iloc[den_rows['leaves'],den_cols['leaves']])
+    
+    #
+    if owerwrite_order:
+        heatmap=ax4.pcolor(in_df.ix[owerwrite_order])
     else:
-        heatmap=ax4.pcolor(in_df.ix[den_rows['leaves']])
-        
+        if order_row_and_columns == True:
+            heatmap=ax4.pcolor(in_df.iloc[den_rows['leaves'],den_cols['leaves']])
+        else:
+            heatmap=ax4.pcolor(in_df.ix[den_rows['leaves']])
+    
+    
+    
     ax4.set_aspect('auto')
     ax4.set_ylim(0,in_df.shape[0])
     ax4.set_xlim(0,in_df.shape[1])
@@ -211,4 +218,6 @@ def plot_experiment(in_df,
     if get_clusters:
         clusters = sch.fcluster(link, cut_distance_rows, criterion='distance')
         in_df['clusters']=clusters
-        return in_df
+        return in_df, den_rows['leaves']
+    else:
+        return den_rows['leaves']

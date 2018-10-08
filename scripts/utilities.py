@@ -5,13 +5,23 @@ def print_result(start_df_shape, shape_before, df, what):
     removed = shape_before[0]- df.shape[0]
     removed_from_beginning = start_df_shape[0]-df.shape[0]
     if removed > 0:
-        print 'removed ',removed, what   
-        print 'tot ', removed_from_beginning, ' entries removed' 
-        print '---------------'
+        print ('removed ',removed, what )  
+        print ('tot ', removed_from_beginning, ' entries removed' )
+        print ('---------------')
     else:
-        print what
-        print 'nothing removed'
-        print '---------------'
+        print (what)
+        print ('nothing removed')
+        print ('---------------')
+
+#function to format the protein id
+def clean_id(temp_id):
+    temp_id = temp_id.split(';')[0]
+    if ':' in temp_id:
+        temp_id=temp_id.split(':')[0]
+    if temp_id.count('.')>=3:
+        temp_id = '.'.join(temp_id.split('.')[0:3])
+    temp_id = temp_id.split('-')[0]
+    return temp_id
 
 
 #this function remove rubbish entries from a 
@@ -48,7 +58,7 @@ def clean(df):
 def get_data(df, quant_method, experiment, fractions):
     cols_to_select = [ quant_method+str(experiment)+str(f) for f in fractions]
     df = df[cols_to_select]
-    print 'got: ', df.shape[0], 'protein now'
+    print ('got: ', df.shape[0], 'protein now')
     #remove raws with all zeros entries in the data
     df = df[(df.T != 0).any()]
     return df
@@ -58,3 +68,4 @@ def get_data(df, quant_method, experiment, fractions):
 def norm_max(X):
     X = X/X.max()
     return X
+
